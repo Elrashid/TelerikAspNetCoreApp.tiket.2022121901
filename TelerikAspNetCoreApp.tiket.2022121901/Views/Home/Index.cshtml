@@ -1,0 +1,135 @@
+﻿<a onClick="openWin('dropDownList_ServerFiltering_true_template')" href="#">✔DropDownList_ServerFiltering_true_open✔</a>
+<br />
+<a onclick="openWin('dropDownList_inside_form_ServerFiltering_false_template')" href="#">✔DropDownList_inside_form_ServerFiltering_false_open✔</a>
+<br />
+<a onclick="openWin('dropDownList_inside_form_ServerFiltering_true_template')" href="#">❌DropDownList_inside_form_ServerFiltering_true_open❌</a>
+
+@(Html.Kendo().Window().Name("MainWindow")
+    .Title("")
+    .Visible(false)
+    .Modal(true)
+
+    .Draggable(true)
+    .MaxWidth(400)
+ )
+
+
+<script type="text/javascript">
+    var _error;
+    function openWin(templateName) {
+        console.log("openWin => " + templateName)
+        var wnd = $("#MainWindow").data("kendoWindow");
+        try {
+            var template = $("#" + templateName);
+            var html = template.html();
+            var kendoTemplate = kendo.template(html);
+            var data = { id: null, text: " " };
+            var kendoTemplateInitialized = kendoTemplate(data)
+            wnd.content(kendoTemplateInitialized);
+            wnd.center().open();
+        } catch (error) {
+            alert(error.message);
+            console.error(error);
+            _error = error
+        }
+    }
+</script>
+
+ 
+
+<script type="text/x-kendo-template" id="dropDownList_ServerFiltering_true_template">
+
+    @(Html.Kendo().DropDownList()
+                .Name("BiblioId")
+                .HtmlAttributes(new { })
+                .DataTextField("Title")
+                .DataValueField("BiblioId")
+                .NoDataTemplate("nodata")
+                .Filter(FilterType.Contains)
+                .DataSource(source =>
+                {
+                    source.Read(read =>
+                    {
+                        read.Action("biblio_read", "Home");
+                    })
+                    .ServerFiltering(true);
+                }).ToClientTemplate())
+</script>
+
+
+<script type="text/x-kendo-template" id="dropDownList_inside_form_ServerFiltering_false_template">
+
+    @(Html.Kendo().Form<TelerikAspNetCoreApp.tiket._2022121901.Controllers.Biblio>()
+            .Name("Biblio_Form")
+            .HtmlAttributes(new { action = "Biblio_Save", method = "POST", })
+                .Layout("grid")
+            .Grid(g => g.Cols(1).Gutter(10))
+                .Validatable(v =>
+                {
+                    v.ValidateOnBlur(true);
+                    v.ValidationSummary(vs => vs.Enable(false));
+                })
+                .Items(items =>
+            {
+                items.Add()
+                    .Field(f => f.BiblioId)
+                        .Label(l => l.Text("Biblio Id"))
+                        .Editor(e =>
+                        {
+                            e.DropDownList()
+                                .HtmlAttributes(new { })
+                                    .DataTextField("Title")
+                                    .DataValueField("BiblioId")
+                                    .NoDataTemplate("nodata")
+                                    .Filter(FilterType.Contains)
+                                    .DataSource(source =>
+                                        {
+                                            source.Read(read =>
+                                            {
+                                                read.Action("biblio_read", "Home");
+                                            })
+                                    .ServerFiltering(false);
+                                        });
+                        });
+
+            }).ToClientTemplate())
+</script>
+
+
+<script type="text/x-kendo-template" id="dropDownList_inside_form_ServerFiltering_true_template">
+
+    @(Html.Kendo().Form<TelerikAspNetCoreApp.tiket._2022121901.Controllers.Biblio>()
+                .Name("Biblio_Form")
+                .HtmlAttributes(new { action = "Biblio_Save", method = "POST", })
+                    .Layout("grid")
+                .Grid(g => g.Cols(1).Gutter(10))
+                    .Validatable(v =>
+                    {
+                        v.ValidateOnBlur(true);
+                        v.ValidationSummary(vs => vs.Enable(false));
+                    })
+                    .Items(items =>
+                {
+                    items.Add()
+                        .Field(f => f.BiblioId)
+                            .Label(l => l.Text("Biblio Id"))
+                            .Editor(e =>
+                            {
+                                e.DropDownList()
+                                    .HtmlAttributes(new { })
+                                        .DataTextField("Title")
+                                        .DataValueField("BiblioId")
+                                        .NoDataTemplate("nodata")
+                                        .Filter(FilterType.Contains)
+                                        .DataSource(source =>
+                                            {
+                                                source.Read(read =>
+                                                {
+                                                    read.Action("biblio_read", "Home");
+                                                })
+                                        .ServerFiltering(true);
+                                            });
+                            });
+
+                }).ToClientTemplate())
+</script>
